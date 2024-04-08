@@ -1,0 +1,21 @@
+[package]
+name = "arrise"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Serialise structured data into const-sized arrays."
+documentation = "https://docs.rs/arrise"
+categories = ["no-std", "no-std::no-alloc"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = ["ne"]
+ne = []
+le = []
+be = []
+std = []
+
+[dependencies]
+rend = { version = "0.4.2" }
+split_array = "0.1.1"
