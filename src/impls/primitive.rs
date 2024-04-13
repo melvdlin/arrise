@@ -7,15 +7,15 @@ pub struct IllegalBitPattern;
 
 macro_rules! to_e_bytes {
     ($expr:expr) => {{
-        #[cfg(feature = "ne")]
+        #[cfg(feature = "primitive_ne")]
         {
             ($expr).to_ne_bytes()
         }
-        #[cfg(feature = "le")]
+        #[cfg(feature = "primitive_le")]
         {
             ($expr).to_ne_bytes()
         }
-        #[cfg(feature = "be")]
+        #[cfg(feature = "primitive_be")]
         {
             ($expr).to_be_bytes()
         }
@@ -24,15 +24,15 @@ macro_rules! to_e_bytes {
 
 macro_rules! from_e_bytes {
     ($ty:ty, $expr:expr) => {{
-        #[cfg(feature = "ne")]
+        #[cfg(feature = "primitive_ne")]
         {
             <$ty>::from_ne_bytes($expr)
         }
-        #[cfg(feature = "le")]
+        #[cfg(feature = "primitive_le")]
         {
             <$ty>::from_le_bytes($expr)
         }
-        #[cfg(feature = "be")]
+        #[cfg(feature = "primitive_be")]
         {
             <$ty>::from_be_bytes($expr)
         }

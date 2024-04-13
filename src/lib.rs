@@ -9,11 +9,22 @@
 
 use core::mem::MaybeUninit;
 #[cfg(any(
-    all(feature = "ne", any(feature = "le", feature = "be")),
-    all(feature = "le", any(feature = "ne", feature = "be")),
-    all(feature = "be", any(feature = "ne", feature = "le")),
+    all(
+        feature = "primitive_ne",
+        any(feature = "primitive_le", feature = "primitive_be")
+    ),
+    all(
+        feature = "primitive_le",
+        any(feature = "primitive_ne", feature = "primitive_be")
+    ),
+    all(
+        feature = "primitive_be",
+        any(feature = "primitive_ne", feature = "primitive_le")
+    ),
 ))]
-compile_error!(r#"features "ne", "le" and "be" cannot be used together"#);
+compile_error!(
+    r#"features "primitive_ne", "primitive_le" and "primitive_be" cannot primitive_be used together"#
+);
 
 pub mod impls;
 

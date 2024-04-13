@@ -10,12 +10,19 @@ categories = ["no-std", "no-std::no-alloc"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = ["ne"]
-ne = []
-le = []
-be = []
+default = ["primitive_ne"]
+primitive_ne = []
+primitive_le = []
+primitive_be = []
+large_tuples = []
 std = []
 
 [dependencies]
 rend = { version = "0.4.2" }
-split_array = "0.1.1"
+
+[dependencies.split_array]
+version = "0.2.0"
+
+[dependencies.arrise_macro]
+#git = "https://github.com/melvdlin/arrise-macro.git"
+path = "../arrise-macro"
