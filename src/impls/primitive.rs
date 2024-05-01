@@ -124,3 +124,92 @@ impl DeserializeIntoUninit for char {
         Ok(into.write(char::try_from(u32::deserialize(buffer).unwrap())?))
     }
 }
+macro_rules! impl_nonzero {
+    ($nonzero:ty, $primitive:ty) => {
+        impl SerialSize for $nonzero {
+            const SIZE: usize = size_of::<$primitive>();
+        }
+
+        impl Serialize for $nonzero {
+            fn serialize(&self, buffer: &mut [u8; Self::SIZE]) {
+                self.get().serialize(buffer)
+            }
+        }
+
+        impl DeserializeIntoUninit for $nonzero {
+            type Error = IllegalBitPattern;
+
+            fn deserialize_into_uninit<'a>(
+                into: &'a mut MaybeUninit<Self>,
+                buffer: &[u8; Self::SIZE],
+            ) -> Result<&'a mut Self, Self::Error> {
+                Ok(into.write(
+                    Self::new(<$primitive>::deserialize(buffer).unwrap())
+                        .ok_or(IllegalBitPattern)?,
+                ))
+            }
+        }
+    };
+}
+
+impl_nonzero!(core::num::NonZeroI8, i8);
+impl_nonzero!(core::num::NonZeroI16, i16);
+impl_nonzero!(core::num::NonZeroI32, i32);
+impl_nonzero!(core::num::NonZeroI64, i64);
+impl_nonzero!(core::num::NonZeroI128, i128);
+impl_nonzero!(core::num::NonZeroIsize, isize);
+impl_nonzero!(core::num::NonZeroU8, u8);
+impl_nonzero!(core::num::NonZeroU16, u16);
+impl_nonzero!(core::num::NonZeroU32, u32);
+impl_nonzero!(core::num::NonZeroU64, u64);
+impl_nonzero!(core::num::NonZeroU128, u128);
+impl_nonzero!(core::num::NonZeroUsize, usize);
+
+macro_rules! impl_atomic {
+    ($atomic:ty, $primitive:ty) => {
+        impl SerialSize for $atomic {
+            const SIZE: usize = size_of::<$primitive>();
+        }
+
+        impl Serialize for $atomic {
+            fn serialize(&self, buffer: &mut [u8; Self::SIZE]) {
+                self.load(core::sync::atomic::Ordering::SeqCst)
+                    .serialize(buffer)
+            }
+        }
+
+        impl DeserializeIntoUninit for $atomic {
+            type Error = <$primitive as Deserialize>::Error;
+
+            fn deserialize_into_uninit<'a>(
+                into: &'a mut MaybeUninit<Self>,
+                buffer: &[u8; Self::SIZE],
+            ) -> Result<&'a mut Self, Self::Error> {
+                Ok(into.write(Self::new(<$primitive>::deserialize(buffer)?)))
+            }
+        }
+    };
+}
+
+#[cfg(target_has_atomic = "8")]
+impl_atomic!(core::sync::atomic::AtomicBool, bool);
+#[cfg(target_has_atomic = "8")]
+impl_atomic!(core::sync::atomic::AtomicI8, i8);
+#[cfg(target_has_atomic = "16")]
+impl_atomic!(core::sync::atomic::AtomicI16, i16);
+#[cfg(target_has_atomic = "32")]
+impl_atomic!(core::sync::atomic::AtomicI32, i32);
+#[cfg(target_has_atomic = "64")]
+impl_atomic!(core::sync::atomic::AtomicI64, i64);
+#[cfg(target_has_atomic = "ptr")]
+impl_atomic!(core::sync::atomic::AtomicIsize, isize);
+#[cfg(target_has_atomic = "8")]
+impl_atomic!(core::sync::atomic::AtomicU8, u8);
+#[cfg(target_has_atomic = "16")]
+impl_atomic!(core::sync::atomic::AtomicU16, u16);
+#[cfg(target_has_atomic = "32")]
+impl_atomic!(core::sync::atomic::AtomicU32, u32);
+#[cfg(target_has_atomic = "64")]
+impl_atomic!(core::sync::atomic::AtomicU64, u64);
+#[cfg(target_has_atomic = "ptr")]
+impl_atomic!(core::sync::atomic::AtomicUsize, usize);

@@ -17,9 +17,6 @@ primitive_be = []
 large_tuples = []
 std = []
 
-[dependencies]
-rend = { version = "0.4.2" }
-
 [dependencies.split_array]
 version = "0.2.0"
 
