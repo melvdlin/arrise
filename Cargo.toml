@@ -17,9 +17,6 @@ large_tuples = []
 atomic_int_128 = []
 std = []
 
-[dependencies]
-rend = { version = "0.4.2" }
-
 [dependencies.split_array]
 version = "0.2.0"
 

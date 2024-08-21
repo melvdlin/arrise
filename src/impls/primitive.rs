@@ -7,7 +7,7 @@ pub struct IllegalBitPattern;
 
 macro_rules! to_e_bytes {
     ($expr:expr) => {
-        if cfg!(feature = "primite_le") {
+        if cfg!(feature = "primitive_le") {
             $expr.to_le_bytes()
         } else if cfg!(feature = "primitive_be") {
             $expr.to_be_bytes()
