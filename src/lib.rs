@@ -6,6 +6,7 @@
 #![feature(generic_const_exprs)]
 #![feature(array_chunks)]
 #![cfg_attr(not(feature = "std"), no_std)]
+#![feature(cfg_target_has_atomic)]
 #![cfg_attr(feature = "atomic_int_128", feature(integer_atomics))]
 
 use core::mem::MaybeUninit;

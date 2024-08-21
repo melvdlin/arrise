@@ -55,17 +55,19 @@ macro_rules! impl_primitive {
 }
 
 macro_rules! impl_atomic {
-    ($ty:ty, $base:ty) => {
-        impl_atomic!($ty, $base, cfg(all()));
+    ($ty:ty, $primitive:ty, $size:expr) => {
+        impl_atomic!($ty, $primitive, $size, cfg(all()));
     };
 
-    ($ty:ty, $primitive:ty, $feature_gate:meta) => {
+    ($ty:ty, $primitive:ty, $size:expr, $feature_gate:meta) => {
         #[$feature_gate]
+        #[cfg(target_has_atomic_load_store = $size)]
         impl crate::SerialSize for $ty {
             const SIZE: usize = size_of::<$primitive>();
         }
 
         #[$feature_gate]
+        #[cfg(target_has_atomic_load_store = $size)]
         impl crate::Serialize for $ty {
             fn serialize(&self, buffer: &mut [u8; <Self as crate::SerialSize>::SIZE]) {
                 self.load(core::sync::atomic::Ordering::SeqCst)
@@ -74,6 +76,7 @@ macro_rules! impl_atomic {
         }
 
         #[$feature_gate]
+        #[cfg(target_has_atomic_load_store = $size)]
         impl crate::DeserializeIntoUninit for $ty {
             type Error = <$primitive as Deserialize>::Error;
 
@@ -129,27 +132,29 @@ impl_primitive!(isize);
 impl_primitive!(f32);
 impl_primitive!(f64);
 
-impl_atomic!(core::sync::atomic::AtomicBool, bool);
-impl_atomic!(core::sync::atomic::AtomicU8, u8);
-impl_atomic!(core::sync::atomic::AtomicU16, u16);
-impl_atomic!(core::sync::atomic::AtomicU32, u32);
-impl_atomic!(core::sync::atomic::AtomicU64, u64);
+impl_atomic!(core::sync::atomic::AtomicBool, bool, "8");
+impl_atomic!(core::sync::atomic::AtomicU8, u8, "8");
+impl_atomic!(core::sync::atomic::AtomicU16, u16, "16");
+impl_atomic!(core::sync::atomic::AtomicU32, u32, "32");
+impl_atomic!(core::sync::atomic::AtomicU64, u64, "64");
 impl_atomic!(
     core::sync::atomic::AtomicU128,
     u128,
+    "128",
     cfg(feature = "atomic_int_128")
 );
-impl_atomic!(core::sync::atomic::AtomicUsize, usize);
-impl_atomic!(core::sync::atomic::AtomicI8, i8);
-impl_atomic!(core::sync::atomic::AtomicI16, i16);
-impl_atomic!(core::sync::atomic::AtomicI32, i32);
-impl_atomic!(core::sync::atomic::AtomicI64, i64);
+impl_atomic!(core::sync::atomic::AtomicUsize, usize, "ptr");
+impl_atomic!(core::sync::atomic::AtomicI8, i8, "8");
+impl_atomic!(core::sync::atomic::AtomicI16, i16, "16");
+impl_atomic!(core::sync::atomic::AtomicI32, i32, "32");
+impl_atomic!(core::sync::atomic::AtomicI64, i64, "64");
 impl_atomic!(
     core::sync::atomic::AtomicI128,
     i128,
+    "128",
     cfg(feature = "atomic_int_128")
 );
-impl_atomic!(core::sync::atomic::AtomicIsize, isize);
+impl_atomic!(core::sync::atomic::AtomicIsize, isize, "ptr");
 
 impl_nonzero!(core::num::NonZeroI8, i8);
 impl_nonzero!(core::num::NonZeroI16, i16);
