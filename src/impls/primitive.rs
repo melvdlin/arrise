@@ -86,6 +86,33 @@ macro_rules! impl_atomic {
         }
     };
 }
+macro_rules! impl_nonzero {
+    ($nonzero:ty, $primitive:ty) => {
+        impl SerialSize for $nonzero {
+            const SIZE: usize = size_of::<$primitive>();
+        }
+
+        impl Serialize for $nonzero {
+            fn serialize(&self, buffer: &mut [u8; Self::SIZE]) {
+                self.get().serialize(buffer)
+            }
+        }
+
+        impl DeserializeIntoUninit for $nonzero {
+            type Error = IllegalBitPattern;
+
+            fn deserialize_into_uninit<'a>(
+                into: &'a mut MaybeUninit<Self>,
+                buffer: &[u8; Self::SIZE],
+            ) -> Result<&'a mut Self, Self::Error> {
+                Ok(into.write(
+                    Self::new(<$primitive>::deserialize(buffer).unwrap())
+                        .ok_or(IllegalBitPattern)?,
+                ))
+            }
+        }
+    };
+}
 
 impl_primitive!(u8);
 impl_primitive!(u16);
@@ -102,6 +129,7 @@ impl_primitive!(isize);
 impl_primitive!(f32);
 impl_primitive!(f64);
 
+impl_atomic!(core::sync::atomic::AtomicBool, bool);
 impl_atomic!(core::sync::atomic::AtomicU8, u8);
 impl_atomic!(core::sync::atomic::AtomicU16, u16);
 impl_atomic!(core::sync::atomic::AtomicU32, u32);
@@ -122,6 +150,19 @@ impl_atomic!(
     cfg(feature = "atomic_int_128")
 );
 impl_atomic!(core::sync::atomic::AtomicIsize, isize);
+
+impl_nonzero!(core::num::NonZeroI8, i8);
+impl_nonzero!(core::num::NonZeroI16, i16);
+impl_nonzero!(core::num::NonZeroI32, i32);
+impl_nonzero!(core::num::NonZeroI64, i64);
+impl_nonzero!(core::num::NonZeroI128, i128);
+impl_nonzero!(core::num::NonZeroIsize, isize);
+impl_nonzero!(core::num::NonZeroU8, u8);
+impl_nonzero!(core::num::NonZeroU16, u16);
+impl_nonzero!(core::num::NonZeroU32, u32);
+impl_nonzero!(core::num::NonZeroU64, u64);
+impl_nonzero!(core::num::NonZeroU128, u128);
+impl_nonzero!(core::num::NonZeroUsize, usize);
 
 impl SerialSize for bool {
     const SIZE: usize = <u8 as SerialSize>::SIZE;
