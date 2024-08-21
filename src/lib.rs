@@ -6,26 +6,9 @@
 #![feature(generic_const_exprs)]
 #![feature(array_chunks)]
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(feature = "atomic_int_128", feature(integer_atomics))]
 
 use core::mem::MaybeUninit;
-#[cfg(any(
-    all(
-        feature = "primitive_ne",
-        any(feature = "primitive_le", feature = "primitive_be")
-    ),
-    all(
-        feature = "primitive_le",
-        any(feature = "primitive_ne", feature = "primitive_be")
-    ),
-    all(
-        feature = "primitive_be",
-        any(feature = "primitive_ne", feature = "primitive_le")
-    ),
-))]
-compile_error!(
-    r#"features "primitive_ne", "primitive_le" and "primitive_be" cannot primitive_be used together"#
-);
-
 pub mod impls;
 
 /// A trait indicating the size of the serialized form of `Self`.

@@ -10,11 +10,11 @@ categories = ["no-std", "no-std::no-alloc"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = ["primitive_ne"]
-primitive_ne = []
+default = []
 primitive_le = []
 primitive_be = []
 large_tuples = []
+atomic_int_128 = []
 std = []
 
 [dependencies]
