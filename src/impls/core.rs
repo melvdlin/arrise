@@ -1,3 +1,3 @@
-mod array;
-mod option;
-mod tuple;
+pub mod array;
+pub mod option;
+pub mod tuple;

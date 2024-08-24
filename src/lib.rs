@@ -46,3 +46,18 @@ pub trait Deserialize: SerialSize + Sized {
         Ok(unsafe { result.assume_init() })
     }
 }
+
+#[allow(unused)]
+macro_rules! assert_serial_eq {
+    ($ty:ty, $x:expr) => {{
+        use $crate::{Deserialize, SerialSize, Serialize};
+
+        let mut buf = [0u8; <$ty as SerialSize>::SIZE];
+        <$ty as Serialize>::serialize($x, &mut buf);
+        let de = <$ty as Deserialize>::deserialize(&buf).expect("deserialization failed");
+        assert_eq!($x, &de);
+    }};
+}
+
+#[allow(unused)]
+use assert_serial_eq;

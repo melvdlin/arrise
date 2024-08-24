@@ -1,9 +1,7 @@
+use crate::impls::IllegalBitPattern;
 use crate::{Deserialize, SerialSize, Serialize};
 use core::char::CharTryFromError;
 use core::mem::{size_of, MaybeUninit};
-
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Default)]
-pub struct IllegalBitPattern;
 
 macro_rules! to_e_bytes {
     ($expr:expr) => {
