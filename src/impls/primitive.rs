@@ -1,4 +1,4 @@
-use crate::{Deserialize, DeserializeIntoUninit, SerialSize, Serialize};
+use crate::{Deserialize, SerialSize, Serialize};
 use core::char::CharTryFromError;
 use core::mem::{size_of, MaybeUninit};
 
@@ -41,7 +41,7 @@ macro_rules! impl_primitive {
             }
         }
 
-        impl crate::DeserializeIntoUninit for $ty {
+        impl crate::Deserialize for $ty {
             type Error = core::convert::Infallible;
 
             fn deserialize_into_uninit<'a>(
@@ -77,7 +77,7 @@ macro_rules! impl_atomic {
 
         #[$feature_gate]
         #[cfg(target_has_atomic_load_store = $size)]
-        impl crate::DeserializeIntoUninit for $ty {
+        impl crate::Deserialize for $ty {
             type Error = <$primitive as Deserialize>::Error;
 
             fn deserialize_into_uninit<'a>(
@@ -101,7 +101,7 @@ macro_rules! impl_nonzero {
             }
         }
 
-        impl DeserializeIntoUninit for $nonzero {
+        impl Deserialize for $nonzero {
             type Error = IllegalBitPattern;
 
             fn deserialize_into_uninit<'a>(
@@ -179,7 +179,7 @@ impl Serialize for bool {
     }
 }
 
-impl DeserializeIntoUninit for bool {
+impl Deserialize for bool {
     type Error = IllegalBitPattern;
 
     fn deserialize_into_uninit<'a>(
@@ -204,7 +204,7 @@ impl Serialize for char {
     }
 }
 
-impl DeserializeIntoUninit for char {
+impl Deserialize for char {
     type Error = CharTryFromError;
 
     fn deserialize_into_uninit<'a>(
