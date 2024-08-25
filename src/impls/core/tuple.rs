@@ -78,3 +78,32 @@ macro_rules! impl_for_tuple {
 impl_for_tuples!(12);
 #[cfg(feature = "large_tuples")]
 impl_for_tuples!(64);
+
+#[cfg(test)]
+mod tests {
+    use crate::assert_serial_eq;
+
+    #[test]
+    fn test_complex() {
+        assert_serial_eq!(
+            (
+                u64,
+                bool,
+                f32,
+                Option<[f64; 3]>,
+                ((usize, bool), Option<i128>, [(bool, Option<f64>, i16); 2])
+            ),
+            &(
+                1234u64,
+                true,
+                12.3456f32,
+                Some([4.5f64, 9.133f64, -14.231f64]),
+                (
+                    (2, false),
+                    None,
+                    [(true, None, 2i16), (false, Some(23.5), 38i16)]
+                )
+            )
+        );
+    }
+}
