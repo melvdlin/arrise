@@ -1,7 +1,6 @@
 use crate::impls::IllegalBitPattern;
 use crate::{Deserialize, SerialSize, Serialize};
 use core::fmt::Debug;
-use core::mem::{transmute, MaybeUninit};
 use core::ptr::NonNull;
 use split_array::SplitArray;
 

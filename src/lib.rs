@@ -76,12 +76,13 @@ pub trait Deserialize: SerialSize + Sized {
 #[allow(unused)]
 macro_rules! assert_serial_eq {
     ($ty:ty, $x:expr) => {{
+        use core::ops::Deref;
         use $crate::{Deserialize, SerialSize, Serialize};
 
         let mut buf = [0u8; <$ty as SerialSize>::SIZE];
         <$ty as Serialize>::serialize($x, &mut buf);
         let de = <$ty as Deserialize>::deserialize(&buf).expect("deserialization failed");
-        assert_eq!($x, &de);
+        assert_eq!($x.deref(), (&de).deref());
     }};
 }
 

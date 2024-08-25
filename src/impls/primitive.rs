@@ -185,11 +185,12 @@ impl Deserialize for bool {
         into: NonNull<Self>,
         buffer: &[u8; <Self as SerialSize>::SIZE],
     ) -> Result<(), Self::Error> {
-        Ok(into.write(match *buffer {
+        into.write(match *buffer {
             | [0] => false,
             | [1] => true,
             | _ => Err(IllegalBitPattern)?,
-        }))
+        });
+        Ok(())
     }
 }
 
@@ -210,6 +211,174 @@ impl Deserialize for char {
         into: NonNull<Self>,
         buffer: &[u8; <Self as SerialSize>::SIZE],
     ) -> Result<(), Self::Error> {
-        Ok(into.write(char::try_from(u32::deserialize(buffer).unwrap())?))
+        into.write(char::try_from(u32::deserialize(buffer).unwrap())?);
+        Ok(())
     }
+}
+
+#[cfg(test)]
+mod tests {
+    mod primitive {
+        use crate::assert_serial_eq;
+
+        #[test]
+        fn test_bool() {
+            assert_serial_eq!(bool, &true);
+            assert_serial_eq!(bool, &false);
+        }
+
+        #[test]
+        fn test_u8() {
+            assert_serial_eq!(u8, &0);
+            assert_serial_eq!(u8, &u8::MIN);
+            assert_serial_eq!(u8, &u8::MAX);
+
+            assert_serial_eq!(u8, &1);
+            assert_serial_eq!(u8, &0x34);
+            assert_serial_eq!(u8, &0x43);
+        }
+
+        #[test]
+        fn test_i8() {
+            assert_serial_eq!(i8, &0);
+            assert_serial_eq!(i8, &i8::MIN);
+            assert_serial_eq!(i8, &i8::MAX);
+
+            assert_serial_eq!(i8, &1);
+            assert_serial_eq!(i8, &-1);
+            assert_serial_eq!(i8, &0x34);
+            assert_serial_eq!(i8, &-0x34);
+            assert_serial_eq!(i8, &0x43);
+            assert_serial_eq!(i8, &-0x43);
+        }
+
+        #[test]
+        fn test_u16() {
+            assert_serial_eq!(u16, &0);
+            assert_serial_eq!(u16, &u16::MIN);
+            assert_serial_eq!(u16, &u16::MAX);
+
+            assert_serial_eq!(u16, &1);
+            assert_serial_eq!(u16, &0x1234);
+            assert_serial_eq!(u16, &0x4321);
+        }
+
+        #[test]
+        fn test_i16() {
+            assert_serial_eq!(i16, &0);
+            assert_serial_eq!(i16, &i16::MIN);
+            assert_serial_eq!(i16, &i16::MAX);
+
+            assert_serial_eq!(i16, &1);
+            assert_serial_eq!(i16, &-1);
+            assert_serial_eq!(i16, &0x1234);
+            assert_serial_eq!(i16, &-0x1234);
+            assert_serial_eq!(i16, &0x4321);
+            assert_serial_eq!(i16, &-0x4321);
+        }
+
+        #[test]
+        fn test_u32() {
+            assert_serial_eq!(u32, &0);
+            assert_serial_eq!(u32, &u32::MIN);
+            assert_serial_eq!(u32, &u32::MAX);
+
+            assert_serial_eq!(u32, &1);
+            assert_serial_eq!(u32, &0x12345678);
+            assert_serial_eq!(u32, &0x87654321);
+        }
+
+        #[test]
+        fn test_i32() {
+            assert_serial_eq!(i32, &0);
+            assert_serial_eq!(i32, &i32::MIN);
+            assert_serial_eq!(i32, &i32::MAX);
+
+            assert_serial_eq!(i32, &1);
+            assert_serial_eq!(i32, &-1);
+            assert_serial_eq!(i32, &0x12345678);
+            assert_serial_eq!(i32, &-0x12345678);
+            assert_serial_eq!(i32, &0x43218765);
+            assert_serial_eq!(i32, &-0x43218765);
+        }
+
+        #[test]
+        fn test_u64() {
+            assert_serial_eq!(u64, &0);
+            assert_serial_eq!(u64, &u64::MIN);
+            assert_serial_eq!(u64, &u64::MAX);
+
+            assert_serial_eq!(u64, &1);
+            assert_serial_eq!(u64, &0x123456789ABCDEF8);
+            assert_serial_eq!(u64, &0x8FEDCBA987654321);
+        }
+
+        #[test]
+        fn test_i64() {
+            assert_serial_eq!(i64, &0);
+            assert_serial_eq!(i64, &i64::MIN);
+            assert_serial_eq!(i64, &i64::MAX);
+
+            assert_serial_eq!(i64, &1);
+            assert_serial_eq!(i64, &-1);
+            assert_serial_eq!(i64, &0x123456789ABCDEF8);
+            assert_serial_eq!(i64, &-0x123456789ABCDEF8);
+            assert_serial_eq!(i64, &0x43218FEDCBA98765);
+            assert_serial_eq!(i64, &-0x43218FEDCBA98765);
+        }
+
+        #[test]
+        fn test_u128() {
+            assert_serial_eq!(u128, &0);
+            assert_serial_eq!(u128, &u128::MIN);
+            assert_serial_eq!(u128, &u128::MAX);
+
+            assert_serial_eq!(u128, &1);
+            assert_serial_eq!(u128, &0x123456789ABCDEF88FEDCBA987654321);
+            assert_serial_eq!(u128, &0x8FEDCBA987654321123456789ABCDEF8);
+        }
+
+        #[test]
+        fn test_i128() {
+            assert_serial_eq!(i128, &0);
+            assert_serial_eq!(i128, &i128::MIN);
+            assert_serial_eq!(i128, &i128::MAX);
+
+            assert_serial_eq!(i128, &1);
+            assert_serial_eq!(i128, &-1);
+            assert_serial_eq!(i128, &0x123456789ABCDEF88FEDCBA987654321);
+            assert_serial_eq!(i128, &-0x123456789ABCDEF88FEDCBA987654321);
+            assert_serial_eq!(i128, &0x43218FEDCBA9876556789ABCDEF81234);
+            assert_serial_eq!(i128, &-0x43218FEDCBA9876556789ABCDEF81234);
+        }
+
+        #[test]
+        fn test_usize() {
+            assert_serial_eq!(usize, &0);
+            assert_serial_eq!(usize, &usize::MIN);
+            assert_serial_eq!(usize, &usize::MAX);
+
+            assert_serial_eq!(usize, &1);
+            assert_serial_eq!(usize, &(0x123456789ABCDEF88FEDCBA987654321u128 as usize));
+            assert_serial_eq!(usize, &(0x8FEDCBA987654321123456789ABCDEF8u128 as usize));
+        }
+
+        #[test]
+        fn test_isize() {
+            assert_serial_eq!(isize, &0);
+            assert_serial_eq!(isize, &isize::MIN);
+            assert_serial_eq!(isize, &isize::MAX);
+
+            assert_serial_eq!(isize, &1);
+            assert_serial_eq!(isize, &-1);
+            assert_serial_eq!(isize, &(0x123456789ABCDEF88FEDCBA987654321i128 as isize));
+            assert_serial_eq!(isize, &(-0x123456789ABCDEF88FEDCBA987654321i128 as isize));
+            assert_serial_eq!(isize, &(0x43218FEDCBA9876556789ABCDEF81234i128 as isize));
+            assert_serial_eq!(isize, &(-0x43218FEDCBA9876556789ABCDEF81234i128 as isize));
+        }
+    }
+
+    mod nonzero {}
+
+    mod atomic {}
 }
