@@ -2,6 +2,7 @@ use crate::impls::IllegalBitPattern;
 use crate::{Deserialize, SerialSize, Serialize};
 use core::fmt::Debug;
 use core::mem::{transmute, MaybeUninit};
+use core::ptr::NonNull;
 use split_array::SplitArray;
 
 impl<T: SerialSize> SerialSize for Option<T> {
@@ -50,34 +51,39 @@ where
 {
     type Error = DeserializeOptionError<<T as Deserialize>::Error>;
 
-    fn deserialize_into_uninit<'a>(
-        into: &'a mut MaybeUninit<Option<T>>,
+    unsafe fn deserialize_raw(
+        into: NonNull<Option<T>>,
         buffer: &[u8; <Self as SerialSize>::SIZE],
-    ) -> Result<&'a mut Self, Self::Error> {
+    ) -> Result<(), Self::Error> {
         let (head, buffer) = buffer.split_arr();
 
-        Ok(if <bool as Deserialize>::deserialize(head)? {
+        if <bool as Deserialize>::deserialize(head)? {
             let (head, tail) = buffer.split_arr();
 
             debug_assert_eq!(0, tail.len());
 
             unsafe {
-                let into = transmute::<
-                    &'a mut MaybeUninit<Option<T>>,
-                    &'a mut MaybeUninit<Option<MaybeUninit<T>>>,
-                >(into)
-                .write(Some(MaybeUninit::uninit()));
+                let into = transmute::<NonNull<Option<T>>, NonNull<Option<MaybeUninit<T>>>>(
+                    into,
+                );
+                into.write(Some(MaybeUninit::uninit()));
 
-                let inner = into.as_mut().unwrap_unchecked();
+                let inner = NonNull::new_unchecked(
+                    (&mut *into.as_ptr())
+                        .as_mut()
+                        .unwrap_unchecked()
+                        .as_mut_ptr(),
+                );
 
-                T::deserialize_into_uninit(inner, head)
-                    .map_err(DeserializeOptionError::Data)?;
-
-                transmute::<&'a mut Option<MaybeUninit<T>>, &'a mut Option<T>>(into)
+                T::deserialize_raw(inner, head).map_err(DeserializeOptionError::Data)?;
             }
         } else {
-            into.write(None)
-        })
+            unsafe {
+                into.write(None);
+            }
+        }
+
+        Ok(())
     }
 }
 

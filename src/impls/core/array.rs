@@ -1,5 +1,6 @@
 use crate::{Deserialize, SerialSize, Serialize};
-use core::mem::MaybeUninit;
+use core::mem::transmute;
+use core::ptr::NonNull;
 
 impl<T: SerialSize, const SIZE: usize> SerialSize for [T; SIZE] {
     const SIZE: usize = SIZE * size_of::<T>();
@@ -23,45 +24,31 @@ where
     }
 }
 
-impl<T: Deserialize, const SIZE: usize> Deserialize for [T; SIZE]
+impl<T: Deserialize, const LEN: usize> Deserialize for [T; LEN]
 where
     [(); <T as SerialSize>::SIZE]:,
 {
     type Error = T::Error;
 
-    fn deserialize_into_uninit<'a>(
-        into: &'a mut MaybeUninit<[T; SIZE]>,
+    unsafe fn deserialize_raw(
+        into: NonNull<[T; LEN]>,
         buffer: &[u8; <Self as SerialSize>::SIZE],
-    ) -> Result<&'a mut Self, T::Error> {
-        fn lower_uninit<T, const N: usize>(
-            from: &mut MaybeUninit<[T; N]>,
-        ) -> &mut [MaybeUninit<T>; N] {
+    ) -> Result<(), T::Error> {
+        unsafe {
             // Safety:
-            // MaybeUninit<[T; N]> and [MaybeUninit<T>; N]
-            // have the same layout and invariants
-            unsafe { core::mem::transmute(from) }
-        }
+            // - `[MaybeUninit<T>; LEN]` has the same layout as `[T; LEN]`
 
-        fn lift_uninit<T, const N: usize>(
-            from: &mut [MaybeUninit<T>; N],
-        ) -> &mut MaybeUninit<[T; N]> {
-            // Safety:
-            // MaybeUninit<[T; N]> and [MaybeUninit<T>; N]
-            // have the same layout and invariants
-            unsafe { core::mem::transmute(from) }
-        }
+            let into = transmute::<NonNull<[T; LEN]>, NonNull<T>>(into);
 
-        let into = {
-            let into = lower_uninit(into);
-            for (value, buffer) in into
-                .iter_mut()
-                .zip(buffer.array_chunks::<{ <T as SerialSize>::SIZE }>())
+            for (i, buffer) in
+                (0..LEN).zip(buffer.array_chunks::<{ <T as SerialSize>::SIZE }>())
             {
-                <T as Deserialize>::deserialize_into_uninit(value, buffer)?;
+                // Safety:
+                // `i` is bounded by LEN and therefore never exceeds the allocation
+                <T as Deserialize>::deserialize_raw(into.add(i), buffer)?;
             }
-            lift_uninit(into)
         };
 
-        Ok(unsafe { into.assume_init_mut() })
+        Ok(())
     }
 }

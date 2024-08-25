@@ -3,7 +3,7 @@ use arrise_macro::{
     deserialize_error_assoc_type_for_tuple, deserialize_error_type_for_tuple,
     impl_for_tuples,
 };
-use core::mem::MaybeUninit;
+use core::ptr::NonNull;
 
 macro_rules! impl_serial_size_for_tuple {
     (($($ts:ident,)*)) => {
@@ -14,17 +14,16 @@ macro_rules! impl_serial_size_for_tuple {
 }
 
 macro_rules! impl_serialize_for_tuple {
-    (($($ts:ident,)*)) => {
+    (($($fields:tt: $ts:ident,)*)) => {
         impl<$($ts: Serialize,)*> Serialize for ($($ts,)*)
         where
             [(); <($($ts,)*) as SerialSize>::SIZE $(- <$ts as SerialSize>::SIZE)*]:, {
 
             #[allow(unused_variables, non_snake_case)]
             fn serialize(&self, buffer: &mut [u8; <Self as SerialSize>::SIZE]) {
-                let ($($ts,)*) = self;
                 $(
                 let (head, buffer) = split_array::split_arr_mut(buffer);
-                <$ts as Serialize>::serialize($ts, head);
+                <$ts as Serialize>::serialize(&self.$fields, head);
                 )*
             }
         }
@@ -32,7 +31,7 @@ macro_rules! impl_serialize_for_tuple {
 }
 
 macro_rules! impl_deserialize_for_tuple {
-    (($($ts:ident,)*)) => {
+    (($($fields:tt: $ts:ident,)*)) => {
         deserialize_error_type_for_tuple!(($($ts,)*));
 
         impl<$($ts: Deserialize,)*> Deserialize for ($($ts,)*)
@@ -42,52 +41,36 @@ macro_rules! impl_deserialize_for_tuple {
             type Error = deserialize_error_assoc_type_for_tuple!(($($ts,)*));
 
             #[allow(unused_variables, non_snake_case)]
-            fn deserialize_into_uninit<'a>(
-                into: &'a mut MaybeUninit<Self>,
+            unsafe fn deserialize_raw(
+                into: NonNull<Self>,
                 buffer: &[u8; Self::SIZE]
-            ) -> Result<&'a mut Self, Self::Error> {
-                fn lower_uninit<$($ts,)*>(
-                    from: &mut MaybeUninit<($($ts,)*)>,
-                ) -> &mut ($(MaybeUninit<$ts>,)*) {
-                    // Safety:
-                    // MaybeUninit<(T0, T1, ...)> and (MaybeUninit<T1>, MaybeUninit<T2>, ...)
-                    // have the same layout and invariants
-                    unsafe { core::mem::transmute(from) }
-                }
-
-                fn lift_uninit<$($ts,)*>(
-                    from: &mut ($(MaybeUninit<$ts>,)*),
-                ) -> &mut MaybeUninit<($($ts,)*)> {
-                    // Safety:
-                    // MaybeUninit<(T0, T1, ...)> and (MaybeUninit<T1>, MaybeUninit<T2>, ...)
-                    // have the same layout and invariants
-                    unsafe { core::mem::transmute(from) }
-                }
-
-                let into = {
-                    let into = lower_uninit(into);
-                    let ($($ts,)*) = into;
-
+            ) -> Result<(), Self::Error> {
+                let into = into.as_ptr();
+                #[allow(unused_unsafe)]
+                unsafe {
                     $(
                     let (head, buffer) = split_array::split_arr(buffer);
-                    <$ts as Deserialize>::deserialize_into_uninit($ts, head)
+                    // Safety:
+                    // - taking a raw ref of a place is always safe
+                    // - `into` is valid for writes, therefore,
+                    //   any derived pointer is also valid for writes
+                    let field = NonNull::new_unchecked(&raw mut (*into).$fields);
+                    <$ts as Deserialize>::deserialize_raw(field, head)
                         .map_err(|e| <Self as Deserialize>::Error::$ts(e))?;
                     )*
+                }
 
-                    lift_uninit(into)
-                };
-
-                Ok(unsafe { into.assume_init_mut() })
+                Ok(())
             }
         }
     };
 }
 
 macro_rules! impl_for_tuple {
-    (($($ts:ident,)*)) => {
+    (($($fields:tt: $ts:ident,)*)) => {
         impl_serial_size_for_tuple!(($($ts,)*));
-        impl_serialize_for_tuple!(($($ts,)*));
-        impl_deserialize_for_tuple!(($($ts,)*));
+        impl_serialize_for_tuple!(($($fields: $ts,)*));
+        impl_deserialize_for_tuple!(($($fields: $ts,)*));
     };
 }
 

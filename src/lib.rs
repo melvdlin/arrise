@@ -10,6 +10,8 @@
 #![cfg_attr(feature = "atomic_int_128", feature(integer_atomics))]
 
 use core::mem::MaybeUninit;
+use core::ptr::NonNull;
+
 pub mod impls;
 
 /// A trait indicating the size of the serialized form of `Self`.
@@ -29,15 +31,6 @@ pub trait Deserialize: SerialSize + Sized {
     /// The error type that can occur during deserialization.
     type Error;
 
-    /// Deserialize a `Self` from the provided `buffer`.
-    /// Returns a mutable refernce to the initialized contents of `into`.
-    ///
-    /// The usual rules of [`MaybeUninit::write`] apply.
-    fn deserialize_into_uninit<'a>(
-        into: &'a mut MaybeUninit<Self>,
-        buffer: &[u8; Self::SIZE],
-    ) -> Result<&'a mut Self, Self::Error>;
-
     /// Deserialize a `Self` from the proided `buffer`.
     fn deserialize(buffer: &[u8; Self::SIZE]) -> Result<Self, Self::Error> {
         let mut result = MaybeUninit::uninit();
@@ -45,6 +38,39 @@ pub trait Deserialize: SerialSize + Sized {
         // Safety: we just initialized this
         Ok(unsafe { result.assume_init() })
     }
+
+    /// Deserialize a `Self` from the provided `buffer`.
+    /// Returns a mutable refernce to the initialized contents of `into`.
+    ///
+    /// The usual rules of [`MaybeUninit::write`] apply.
+    fn deserialize_into_uninit<'a>(
+        into: &'a mut MaybeUninit<Self>,
+        buffer: &[u8; Self::SIZE],
+    ) -> Result<&'a mut Self, Self::Error> {
+        unsafe {
+            // Safety:
+            // `into` is a mutable reference, therefore, any derived pointer
+            // is valid for writes (and therefore non-null).
+            let into_ptr = NonNull::new_unchecked(into.as_mut_ptr());
+            Self::deserialize_raw(into_ptr, buffer)?;
+
+            // Safety:
+            // `deserialize_raw` just initialised `into`.
+            Ok(into.assume_init_mut())
+        }
+    }
+
+    /// Deserialize a `Self` from the provided `buffer`.
+    /// If this function returns `Ok`, `into` will contain a valid `Self`.
+    /// Returns a mutable refernce to the initialized contents of `into`.
+    ///
+    /// # Safety
+    /// `into` must be valid for writes.
+    /// For details, see [`core::ptr::write`].
+    unsafe fn deserialize_raw(
+        into: NonNull<Self>,
+        buffer: &[u8; Self::SIZE],
+    ) -> Result<(), Self::Error>;
 }
 
 #[allow(unused)]

@@ -1,7 +1,8 @@
 use crate::impls::IllegalBitPattern;
 use crate::{Deserialize, SerialSize, Serialize};
 use core::char::CharTryFromError;
-use core::mem::{size_of, MaybeUninit};
+use core::mem::size_of;
+use core::ptr::NonNull;
 
 macro_rules! to_e_bytes {
     ($expr:expr) => {
@@ -42,10 +43,10 @@ macro_rules! impl_primitive {
         impl crate::Deserialize for $ty {
             type Error = core::convert::Infallible;
 
-            fn deserialize_into_uninit<'a>(
-                into: &'a mut MaybeUninit<Self>,
+            unsafe fn deserialize_raw(
+                into: NonNull<Self>,
                 buffer: &[u8; <Self as crate::SerialSize>::SIZE],
-            ) -> Result<&'a mut Self, <Self as crate::Deserialize>::Error> {
+            ) -> Result<(), <Self as crate::Deserialize>::Error> {
                 Ok(into.write(from_e_bytes!($ty, *buffer)))
             }
         }
@@ -78,10 +79,10 @@ macro_rules! impl_atomic {
         impl crate::Deserialize for $ty {
             type Error = <$primitive as Deserialize>::Error;
 
-            fn deserialize_into_uninit<'a>(
-                into: &'a mut MaybeUninit<Self>,
+            unsafe fn deserialize_raw(
+                into: NonNull<Self>,
                 buffer: &[u8; <Self as crate::SerialSize>::SIZE],
-            ) -> Result<&'a mut Self, <Self as crate::Deserialize>::Error> {
+            ) -> Result<(), <Self as crate::Deserialize>::Error> {
                 Ok(into.write(Self::new(<$primitive>::deserialize(buffer)?)))
             }
         }
@@ -102,10 +103,10 @@ macro_rules! impl_nonzero {
         impl Deserialize for $nonzero {
             type Error = IllegalBitPattern;
 
-            fn deserialize_into_uninit<'a>(
-                into: &'a mut MaybeUninit<Self>,
+            unsafe fn deserialize_raw(
+                into: NonNull<Self>,
                 buffer: &[u8; Self::SIZE],
-            ) -> Result<&'a mut Self, Self::Error> {
+            ) -> Result<(), Self::Error> {
                 Ok(into.write(
                     Self::new(<$primitive>::deserialize(buffer).unwrap())
                         .ok_or(IllegalBitPattern)?,
@@ -180,10 +181,10 @@ impl Serialize for bool {
 impl Deserialize for bool {
     type Error = IllegalBitPattern;
 
-    fn deserialize_into_uninit<'a>(
-        into: &'a mut MaybeUninit<Self>,
+    unsafe fn deserialize_raw(
+        into: NonNull<Self>,
         buffer: &[u8; <Self as SerialSize>::SIZE],
-    ) -> Result<&'a mut Self, Self::Error> {
+    ) -> Result<(), Self::Error> {
         Ok(into.write(match *buffer {
             | [0] => false,
             | [1] => true,
@@ -205,10 +206,10 @@ impl Serialize for char {
 impl Deserialize for char {
     type Error = CharTryFromError;
 
-    fn deserialize_into_uninit<'a>(
-        into: &'a mut MaybeUninit<Self>,
+    unsafe fn deserialize_raw(
+        into: NonNull<Self>,
         buffer: &[u8; <Self as SerialSize>::SIZE],
-    ) -> Result<&'a mut Self, Self::Error> {
+    ) -> Result<(), Self::Error> {
         Ok(into.write(char::try_from(u32::deserialize(buffer).unwrap())?))
     }
 }
