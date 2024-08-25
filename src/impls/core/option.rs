@@ -57,30 +57,19 @@ where
     ) -> Result<(), Self::Error> {
         let (head, buffer) = buffer.split_arr();
 
-        if <bool as Deserialize>::deserialize(head)? {
+        let value = if <bool as Deserialize>::deserialize(head)? {
             let (head, tail) = buffer.split_arr();
 
             debug_assert_eq!(0, tail.len());
 
-            unsafe {
-                let into = transmute::<NonNull<Option<T>>, NonNull<Option<MaybeUninit<T>>>>(
-                    into,
-                );
-                into.write(Some(MaybeUninit::uninit()));
-
-                let inner = NonNull::new_unchecked(
-                    (&mut *into.as_ptr())
-                        .as_mut()
-                        .unwrap_unchecked()
-                        .as_mut_ptr(),
-                );
-
-                T::deserialize_raw(inner, head).map_err(DeserializeOptionError::Data)?;
-            }
+            Some(T::deserialize(head).map_err(DeserializeOptionError::Data)?)
         } else {
-            unsafe {
-                into.write(None);
-            }
+            None
+        };
+        unsafe {
+            // Safety:
+            // `into` is valid for writes
+            into.write(value);
         }
 
         Ok(())
