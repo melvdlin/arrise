@@ -378,7 +378,190 @@ mod tests {
         }
     }
 
-    mod nonzero {}
+    mod nonzero {
+        use crate::assert_serial_eq;
+        use core::num::*;
+
+        #[test]
+        fn test_u8() {
+            assert_serial_eq!(NonZeroU8, &NonZeroU8::MIN);
+            assert_serial_eq!(NonZeroU8, &NonZeroU8::MAX);
+
+            assert_serial_eq!(NonZeroU8, &NonZeroU8::new(1).unwrap());
+            assert_serial_eq!(NonZeroU8, &NonZeroU8::new(0x34).unwrap());
+            assert_serial_eq!(NonZeroU8, &NonZeroU8::new(0x43).unwrap());
+        }
+
+        #[test]
+        fn test_i8() {
+            assert_serial_eq!(NonZeroI8, &NonZeroI8::MIN);
+            assert_serial_eq!(NonZeroI8, &NonZeroI8::MIN);
+
+            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(1).unwrap());
+            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(-1).unwrap());
+            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(0x34).unwrap());
+            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(-0x34).unwrap());
+            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(0x43).unwrap());
+            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(-0x43).unwrap());
+        }
+
+        #[test]
+        fn test_u16() {
+            assert_serial_eq!(NonZeroU16, &NonZeroU16::MIN);
+            assert_serial_eq!(NonZeroU16, &NonZeroU16::MAX);
+
+            assert_serial_eq!(NonZeroU16, &NonZeroU16::new(1).unwrap());
+            assert_serial_eq!(NonZeroU16, &NonZeroU16::new(0x1234).unwrap());
+            assert_serial_eq!(NonZeroU16, &NonZeroU16::new(0x4321).unwrap());
+        }
+
+        #[test]
+        fn test_i16() {
+            assert_serial_eq!(NonZeroI16, &NonZeroI16::MIN);
+            assert_serial_eq!(NonZeroI16, &NonZeroI16::MAX);
+
+            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(1).unwrap());
+            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(-1).unwrap());
+            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(0x1234).unwrap());
+            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(-0x1234).unwrap());
+            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(0x4321).unwrap());
+            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(-0x4321).unwrap());
+        }
+
+        #[test]
+        fn test_u32() {
+            assert_serial_eq!(NonZeroU32, &NonZeroU32::MIN);
+            assert_serial_eq!(NonZeroU32, &NonZeroU32::MAX);
+
+            assert_serial_eq!(NonZeroU32, &NonZeroU32::new(1).unwrap());
+            assert_serial_eq!(NonZeroU32, &NonZeroU32::new(0x12345678).unwrap());
+            assert_serial_eq!(NonZeroU32, &NonZeroU32::new(0x87654321).unwrap());
+        }
+
+        #[test]
+        fn test_i32() {
+            assert_serial_eq!(NonZeroI32, &NonZeroI32::MIN);
+            assert_serial_eq!(NonZeroI32, &NonZeroI32::MAX);
+
+            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(1).unwrap());
+            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(-1).unwrap());
+            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(0x12345678).unwrap());
+            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(-0x12345678).unwrap());
+            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(0x43218765).unwrap());
+            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(-0x43218765).unwrap());
+        }
+
+        #[test]
+        fn test_u64() {
+            assert_serial_eq!(NonZeroU64, &NonZeroU64::MIN);
+            assert_serial_eq!(NonZeroU64, &NonZeroU64::MAX);
+
+            assert_serial_eq!(NonZeroU64, &NonZeroU64::new(1).unwrap());
+            assert_serial_eq!(NonZeroU64, &NonZeroU64::new(0x123456789ABCDEF8).unwrap());
+            assert_serial_eq!(NonZeroU64, &NonZeroU64::new(0x8FEDCBA987654321).unwrap());
+        }
+
+        #[test]
+        fn test_i64() {
+            assert_serial_eq!(NonZeroI64, &NonZeroI64::MIN);
+            assert_serial_eq!(NonZeroI64, &NonZeroI64::MAX);
+
+            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(1).unwrap());
+            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(-1).unwrap());
+            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(0x123456789ABCDEF8).unwrap());
+            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(-0x123456789ABCDEF8).unwrap());
+            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(0x43218FEDCBA98765).unwrap());
+            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(-0x43218FEDCBA98765).unwrap());
+        }
+
+        #[test]
+        fn test_u128() {
+            assert_serial_eq!(NonZeroU128, &NonZeroU128::MIN);
+            assert_serial_eq!(NonZeroU128, &NonZeroU128::MAX);
+
+            assert_serial_eq!(NonZeroU128, &NonZeroU128::new(1).unwrap());
+            assert_serial_eq!(
+                NonZeroU128,
+                &NonZeroU128::new(0x123456789ABCDEF88FEDCBA987654321).unwrap()
+            );
+            assert_serial_eq!(
+                NonZeroU128,
+                &NonZeroU128::new(0x8FEDCBA987654321123456789ABCDEF8).unwrap()
+            );
+        }
+
+        #[test]
+        fn test_i128() {
+            assert_serial_eq!(NonZeroI128, &NonZeroI128::MIN);
+            assert_serial_eq!(NonZeroI128, &NonZeroI128::MAX);
+
+            assert_serial_eq!(NonZeroI128, &NonZeroI128::new(1).unwrap());
+            assert_serial_eq!(NonZeroI128, &NonZeroI128::new(-1).unwrap());
+            assert_serial_eq!(
+                NonZeroI128,
+                &NonZeroI128::new(0x123456789ABCDEF88FEDCBA987654321).unwrap()
+            );
+            assert_serial_eq!(
+                NonZeroI128,
+                &NonZeroI128::new(-0x123456789ABCDEF88FEDCBA987654321).unwrap()
+            );
+            assert_serial_eq!(
+                NonZeroI128,
+                &NonZeroI128::new(0x43218FEDCBA9876556789ABCDEF81234).unwrap()
+            );
+            assert_serial_eq!(
+                NonZeroI128,
+                &NonZeroI128::new(-0x43218FEDCBA9876556789ABCDEF81234).unwrap()
+            );
+        }
+
+        #[test]
+        fn test_usize() {
+            assert_serial_eq!(NonZeroUsize, &NonZeroUsize::MIN);
+            assert_serial_eq!(NonZeroUsize, &NonZeroUsize::MAX);
+
+            assert_serial_eq!(NonZeroUsize, &NonZeroUsize::new(1).unwrap());
+            assert_serial_eq!(
+                NonZeroUsize,
+                &NonZeroUsize::new(0x123456789ABCDEF88FEDCBA987654321u128 as usize)
+                    .unwrap()
+            );
+            assert_serial_eq!(
+                NonZeroUsize,
+                &NonZeroUsize::new(0x8FEDCBA987654321123456789ABCDEF8u128 as usize)
+                    .unwrap()
+            );
+        }
+
+        #[test]
+        fn test_isize() {
+            assert_serial_eq!(NonZeroIsize, &NonZeroIsize::MIN);
+            assert_serial_eq!(NonZeroIsize, &NonZeroIsize::MAX);
+
+            assert_serial_eq!(NonZeroIsize, &NonZeroIsize::new(1).unwrap());
+            assert_serial_eq!(NonZeroIsize, &NonZeroIsize::new(-1).unwrap());
+            assert_serial_eq!(
+                NonZeroIsize,
+                &NonZeroIsize::new(0x123456789ABCDEF88FEDCBA987654321i128 as isize)
+                    .unwrap()
+            );
+            assert_serial_eq!(
+                NonZeroIsize,
+                &NonZeroIsize::new(-0x123456789ABCDEF88FEDCBA987654321i128 as isize)
+                    .unwrap()
+            );
+            assert_serial_eq!(
+                NonZeroIsize,
+                &NonZeroIsize::new(0x43218FEDCBA9876556789ABCDEF81234i128 as isize)
+                    .unwrap()
+            );
+            assert_serial_eq!(
+                NonZeroIsize,
+                &NonZeroIsize::new(-0x43218FEDCBA9876556789ABCDEF81234i128 as isize)
+                    .unwrap()
+            );
+        }
+    }
 
     mod atomic {}
 }
