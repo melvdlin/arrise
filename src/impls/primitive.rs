@@ -223,8 +223,8 @@ mod tests {
 
         #[test]
         fn test_bool() {
-            assert_serial_eq!(bool, &true);
             assert_serial_eq!(bool, &false);
+            assert_serial_eq!(bool, &true);
         }
 
         #[test]
@@ -563,5 +563,228 @@ mod tests {
         }
     }
 
-    mod atomic {}
+    mod atomic {
+        use crate::assert_serial_eq;
+        use core::sync::atomic::*;
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "8")]
+        fn test_bool() {
+            let load = |atomic: &AtomicBool| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicBool, &AtomicBool::new(false), load);
+            assert_serial_eq!(AtomicBool, &AtomicBool::new(true), load);
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "8")]
+        fn test_u8() {
+            let load = |atomic: &AtomicU8| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicU8, &AtomicU8::new(u8::MIN), load);
+            assert_serial_eq!(AtomicU8, &AtomicU8::new(u8::MAX), load);
+
+            assert_serial_eq!(AtomicU8, &AtomicU8::new(1), load);
+            assert_serial_eq!(AtomicU8, &AtomicU8::new(0x34), load);
+            assert_serial_eq!(AtomicU8, &AtomicU8::new(0x43), load);
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "8")]
+        fn test_i8() {
+            let load = |atomic: &AtomicI8| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicI8, &AtomicI8::new(i8::MIN), load);
+            assert_serial_eq!(AtomicI8, &AtomicI8::new(i8::MIN), load);
+
+            assert_serial_eq!(AtomicI8, &AtomicI8::new(1), load);
+            assert_serial_eq!(AtomicI8, &AtomicI8::new(-1), load);
+            assert_serial_eq!(AtomicI8, &AtomicI8::new(0x34), load);
+            assert_serial_eq!(AtomicI8, &AtomicI8::new(-0x34), load);
+            assert_serial_eq!(AtomicI8, &AtomicI8::new(0x43), load);
+            assert_serial_eq!(AtomicI8, &AtomicI8::new(-0x43), load);
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "16")]
+        fn test_u16() {
+            let load = |atomic: &AtomicU16| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicU16, &AtomicU16::new(u16::MIN), load);
+            assert_serial_eq!(AtomicU16, &AtomicU16::new(u16::MAX), load);
+
+            assert_serial_eq!(AtomicU16, &AtomicU16::new(1), load);
+            assert_serial_eq!(AtomicU16, &AtomicU16::new(0x1234), load);
+            assert_serial_eq!(AtomicU16, &AtomicU16::new(0x4321), load);
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "16")]
+        fn test_i16() {
+            let load = |atomic: &AtomicI16| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicI16, &AtomicI16::new(i16::MIN), load);
+            assert_serial_eq!(AtomicI16, &AtomicI16::new(i16::MAX), load);
+
+            assert_serial_eq!(AtomicI16, &AtomicI16::new(1), load);
+            assert_serial_eq!(AtomicI16, &AtomicI16::new(-1), load);
+            assert_serial_eq!(AtomicI16, &AtomicI16::new(0x1234), load);
+            assert_serial_eq!(AtomicI16, &AtomicI16::new(-0x1234), load);
+            assert_serial_eq!(AtomicI16, &AtomicI16::new(0x4321), load);
+            assert_serial_eq!(AtomicI16, &AtomicI16::new(-0x4321), load);
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "32")]
+        fn test_u32() {
+            let load = |atomic: &AtomicU32| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicU32, &AtomicU32::new(u32::MIN), load);
+            assert_serial_eq!(AtomicU32, &AtomicU32::new(u32::MAX), load);
+
+            assert_serial_eq!(AtomicU32, &AtomicU32::new(1), load);
+            assert_serial_eq!(AtomicU32, &AtomicU32::new(0x12345678), load);
+            assert_serial_eq!(AtomicU32, &AtomicU32::new(0x87654321), load);
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "32")]
+        fn test_i32() {
+            let load = |atomic: &AtomicI32| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicI32, &AtomicI32::new(i32::MIN), load);
+            assert_serial_eq!(AtomicI32, &AtomicI32::new(i32::MAX), load);
+
+            assert_serial_eq!(AtomicI32, &AtomicI32::new(1), load);
+            assert_serial_eq!(AtomicI32, &AtomicI32::new(-1), load);
+            assert_serial_eq!(AtomicI32, &AtomicI32::new(0x12345678), load);
+            assert_serial_eq!(AtomicI32, &AtomicI32::new(-0x12345678), load);
+            assert_serial_eq!(AtomicI32, &AtomicI32::new(0x43218765), load);
+            assert_serial_eq!(AtomicI32, &AtomicI32::new(-0x43218765), load);
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "64")]
+        fn test_u64() {
+            let load = |atomic: &AtomicU64| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicU64, &AtomicU64::new(u64::MIN), load);
+            assert_serial_eq!(AtomicU64, &AtomicU64::new(u64::MAX), load);
+
+            assert_serial_eq!(AtomicU64, &AtomicU64::new(1), load);
+            assert_serial_eq!(AtomicU64, &AtomicU64::new(0x123456789ABCDEF8), load);
+            assert_serial_eq!(AtomicU64, &AtomicU64::new(0x8FEDCBA987654321), load);
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "64")]
+        fn test_i64() {
+            let load = |atomic: &AtomicI64| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicI64, &AtomicI64::new(i64::MIN), load);
+            assert_serial_eq!(AtomicI64, &AtomicI64::new(i64::MAX), load);
+
+            assert_serial_eq!(AtomicI64, &AtomicI64::new(1), load);
+            assert_serial_eq!(AtomicI64, &AtomicI64::new(-1), load);
+            assert_serial_eq!(AtomicI64, &AtomicI64::new(0x123456789ABCDEF8), load);
+            assert_serial_eq!(AtomicI64, &AtomicI64::new(-0x123456789ABCDEF8), load);
+            assert_serial_eq!(AtomicI64, &AtomicI64::new(0x43218FEDCBA98765), load);
+            assert_serial_eq!(AtomicI64, &AtomicI64::new(-0x43218FEDCBA98765), load);
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "128")]
+        #[cfg(feature = "atomic_int_128")]
+        fn test_u128() {
+            let load = |atomic: &AtomicU128| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicU128, &AtomicU128::new(u128::MIN), load);
+            assert_serial_eq!(AtomicU128, &AtomicU128::new(u128::MAX), load);
+
+            assert_serial_eq!(AtomicU128, &AtomicU128::new(1), load);
+            assert_serial_eq!(
+                AtomicU128,
+                &AtomicU128::new(0x123456789ABCDEF88FEDCBA987654321),
+                load
+            );
+            assert_serial_eq!(
+                AtomicU128,
+                &AtomicU128::new(0x8FEDCBA987654321123456789ABCDEF8),
+                load
+            );
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "128")]
+        #[cfg(feature = "atomic_int_128")]
+        fn test_i128() {
+            let load = |atomic: &AtomicI128| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicI128, &AtomicI128::new(i128::MIN), load);
+            assert_serial_eq!(AtomicI128, &AtomicI128::new(i128::MAX), load);
+
+            assert_serial_eq!(AtomicI128, &AtomicI128::new(1), load);
+            assert_serial_eq!(AtomicI128, &AtomicI128::new(-1), load);
+            assert_serial_eq!(
+                AtomicI128,
+                &AtomicI128::new(0x123456789ABCDEF88FEDCBA987654321),
+                load
+            );
+            assert_serial_eq!(
+                AtomicI128,
+                &AtomicI128::new(-0x123456789ABCDEF88FEDCBA987654321),
+                load
+            );
+            assert_serial_eq!(
+                AtomicI128,
+                &AtomicI128::new(0x43218FEDCBA9876556789ABCDEF81234),
+                load
+            );
+            assert_serial_eq!(
+                AtomicI128,
+                &AtomicI128::new(-0x43218FEDCBA9876556789ABCDEF81234),
+                load
+            );
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "ptr")]
+        fn test_usize() {
+            let load = |atomic: &AtomicUsize| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicUsize, &AtomicUsize::new(usize::MIN), load);
+            assert_serial_eq!(AtomicUsize, &AtomicUsize::new(usize::MAX), load);
+
+            assert_serial_eq!(AtomicUsize, &AtomicUsize::new(1), load);
+            assert_serial_eq!(
+                AtomicUsize,
+                &AtomicUsize::new(0x123456789ABCDEF88FEDCBA987654321u128 as usize),
+                load
+            );
+            assert_serial_eq!(
+                AtomicUsize,
+                &AtomicUsize::new(0x8FEDCBA987654321123456789ABCDEF8u128 as usize),
+                load
+            );
+        }
+
+        #[test]
+        #[cfg(target_has_atomic_load_store = "ptr")]
+        fn test_isize() {
+            let load = |atomic: &AtomicIsize| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(AtomicIsize, &AtomicIsize::new(isize::MIN), load);
+            assert_serial_eq!(AtomicIsize, &AtomicIsize::new(isize::MAX), load);
+
+            assert_serial_eq!(AtomicIsize, &AtomicIsize::new(1), load);
+            assert_serial_eq!(AtomicIsize, &AtomicIsize::new(-1), load);
+            assert_serial_eq!(
+                AtomicIsize,
+                &AtomicIsize::new(0x123456789ABCDEF88FEDCBA987654321i128 as isize),
+                load
+            );
+            assert_serial_eq!(
+                AtomicIsize,
+                &AtomicIsize::new(-0x123456789ABCDEF88FEDCBA987654321i128 as isize),
+                load
+            );
+            assert_serial_eq!(
+                AtomicIsize,
+                &AtomicIsize::new(0x43218FEDCBA9876556789ABCDEF81234i128 as isize),
+                load
+            );
+            assert_serial_eq!(
+                AtomicIsize,
+                &AtomicIsize::new(-0x43218FEDCBA9876556789ABCDEF81234i128 as isize),
+                load
+            );
+        }
+    }
 }
