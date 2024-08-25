@@ -52,3 +52,8 @@ where
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    //! see [`crate::impls::core::tuple::tests::test_complex`] for an array (de-)serialisation test
+}
