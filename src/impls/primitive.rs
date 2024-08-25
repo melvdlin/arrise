@@ -219,7 +219,7 @@ impl Deserialize for char {
 #[cfg(test)]
 mod tests {
     mod primitive {
-        use crate::assert_serial_eq;
+        use crate::{assert_serial_eq, Deserialize, SerialSize, Serialize};
 
         #[test]
         fn test_bool() {
@@ -229,152 +229,224 @@ mod tests {
 
         #[test]
         fn test_u8() {
-            assert_serial_eq!(u8, &0);
-            assert_serial_eq!(u8, &u8::MIN);
-            assert_serial_eq!(u8, &u8::MAX);
+            type T = u8;
 
-            assert_serial_eq!(u8, &1);
-            assert_serial_eq!(u8, &0x34);
-            assert_serial_eq!(u8, &0x43);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &0x34);
+            assert_serial_eq!(T, &0x43);
         }
 
         #[test]
         fn test_i8() {
-            assert_serial_eq!(i8, &0);
-            assert_serial_eq!(i8, &i8::MIN);
-            assert_serial_eq!(i8, &i8::MAX);
+            type T = i8;
 
-            assert_serial_eq!(i8, &1);
-            assert_serial_eq!(i8, &-1);
-            assert_serial_eq!(i8, &0x34);
-            assert_serial_eq!(i8, &-0x34);
-            assert_serial_eq!(i8, &0x43);
-            assert_serial_eq!(i8, &-0x43);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &-1);
+            assert_serial_eq!(T, &0x34);
+            assert_serial_eq!(T, &-0x34);
+            assert_serial_eq!(T, &0x43);
+            assert_serial_eq!(T, &-0x43);
         }
 
         #[test]
         fn test_u16() {
-            assert_serial_eq!(u16, &0);
-            assert_serial_eq!(u16, &u16::MIN);
-            assert_serial_eq!(u16, &u16::MAX);
+            type T = u16;
 
-            assert_serial_eq!(u16, &1);
-            assert_serial_eq!(u16, &0x1234);
-            assert_serial_eq!(u16, &0x4321);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &0x1234);
+            assert_serial_eq!(T, &0x4321);
         }
 
         #[test]
         fn test_i16() {
-            assert_serial_eq!(i16, &0);
-            assert_serial_eq!(i16, &i16::MIN);
-            assert_serial_eq!(i16, &i16::MAX);
+            type T = i16;
 
-            assert_serial_eq!(i16, &1);
-            assert_serial_eq!(i16, &-1);
-            assert_serial_eq!(i16, &0x1234);
-            assert_serial_eq!(i16, &-0x1234);
-            assert_serial_eq!(i16, &0x4321);
-            assert_serial_eq!(i16, &-0x4321);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &-1);
+            assert_serial_eq!(T, &0x1234);
+            assert_serial_eq!(T, &-0x1234);
+            assert_serial_eq!(T, &0x4321);
+            assert_serial_eq!(T, &-0x4321);
         }
 
         #[test]
         fn test_u32() {
-            assert_serial_eq!(u32, &0);
-            assert_serial_eq!(u32, &u32::MIN);
-            assert_serial_eq!(u32, &u32::MAX);
+            type T = u32;
 
-            assert_serial_eq!(u32, &1);
-            assert_serial_eq!(u32, &0x12345678);
-            assert_serial_eq!(u32, &0x87654321);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &0x12345678);
+            assert_serial_eq!(T, &0x87654321);
         }
 
         #[test]
         fn test_i32() {
-            assert_serial_eq!(i32, &0);
-            assert_serial_eq!(i32, &i32::MIN);
-            assert_serial_eq!(i32, &i32::MAX);
+            type T = i32;
 
-            assert_serial_eq!(i32, &1);
-            assert_serial_eq!(i32, &-1);
-            assert_serial_eq!(i32, &0x12345678);
-            assert_serial_eq!(i32, &-0x12345678);
-            assert_serial_eq!(i32, &0x43218765);
-            assert_serial_eq!(i32, &-0x43218765);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &-1);
+            assert_serial_eq!(T, &0x12345678);
+            assert_serial_eq!(T, &-0x12345678);
+            assert_serial_eq!(T, &0x43218765);
+            assert_serial_eq!(T, &-0x43218765);
         }
 
         #[test]
         fn test_u64() {
-            assert_serial_eq!(u64, &0);
-            assert_serial_eq!(u64, &u64::MIN);
-            assert_serial_eq!(u64, &u64::MAX);
+            type T = u64;
 
-            assert_serial_eq!(u64, &1);
-            assert_serial_eq!(u64, &0x123456789ABCDEF8);
-            assert_serial_eq!(u64, &0x8FEDCBA987654321);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &0x123456789ABCDEF8);
+            assert_serial_eq!(T, &0x8FEDCBA987654321);
         }
 
         #[test]
         fn test_i64() {
-            assert_serial_eq!(i64, &0);
-            assert_serial_eq!(i64, &i64::MIN);
-            assert_serial_eq!(i64, &i64::MAX);
+            type T = i64;
 
-            assert_serial_eq!(i64, &1);
-            assert_serial_eq!(i64, &-1);
-            assert_serial_eq!(i64, &0x123456789ABCDEF8);
-            assert_serial_eq!(i64, &-0x123456789ABCDEF8);
-            assert_serial_eq!(i64, &0x43218FEDCBA98765);
-            assert_serial_eq!(i64, &-0x43218FEDCBA98765);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &-1);
+            assert_serial_eq!(T, &0x123456789ABCDEF8);
+            assert_serial_eq!(T, &-0x123456789ABCDEF8);
+            assert_serial_eq!(T, &0x43218FEDCBA98765);
+            assert_serial_eq!(T, &-0x43218FEDCBA98765);
         }
 
         #[test]
         fn test_u128() {
-            assert_serial_eq!(u128, &0);
-            assert_serial_eq!(u128, &u128::MIN);
-            assert_serial_eq!(u128, &u128::MAX);
+            type T = u128;
 
-            assert_serial_eq!(u128, &1);
-            assert_serial_eq!(u128, &0x123456789ABCDEF88FEDCBA987654321);
-            assert_serial_eq!(u128, &0x8FEDCBA987654321123456789ABCDEF8);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &0x123456789ABCDEF88FEDCBA987654321);
+            assert_serial_eq!(T, &0x8FEDCBA987654321123456789ABCDEF8);
         }
 
         #[test]
         fn test_i128() {
-            assert_serial_eq!(i128, &0);
-            assert_serial_eq!(i128, &i128::MIN);
-            assert_serial_eq!(i128, &i128::MAX);
+            type T = i128;
 
-            assert_serial_eq!(i128, &1);
-            assert_serial_eq!(i128, &-1);
-            assert_serial_eq!(i128, &0x123456789ABCDEF88FEDCBA987654321);
-            assert_serial_eq!(i128, &-0x123456789ABCDEF88FEDCBA987654321);
-            assert_serial_eq!(i128, &0x43218FEDCBA9876556789ABCDEF81234);
-            assert_serial_eq!(i128, &-0x43218FEDCBA9876556789ABCDEF81234);
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &-1);
+            assert_serial_eq!(T, &0x123456789ABCDEF88FEDCBA987654321);
+            assert_serial_eq!(T, &-0x123456789ABCDEF88FEDCBA987654321);
+            assert_serial_eq!(T, &0x43218FEDCBA9876556789ABCDEF81234);
+            assert_serial_eq!(T, &-0x43218FEDCBA9876556789ABCDEF81234);
         }
 
         #[test]
         fn test_usize() {
-            assert_serial_eq!(usize, &0);
-            assert_serial_eq!(usize, &usize::MIN);
-            assert_serial_eq!(usize, &usize::MAX);
+            type T = usize;
 
-            assert_serial_eq!(usize, &1);
-            assert_serial_eq!(usize, &(0x123456789ABCDEF88FEDCBA987654321u128 as usize));
-            assert_serial_eq!(usize, &(0x8FEDCBA987654321123456789ABCDEF8u128 as usize));
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &(0x123456789ABCDEF88FEDCBA987654321u128 as T));
+            assert_serial_eq!(T, &(0x8FEDCBA987654321123456789ABCDEF8u128 as T));
         }
 
         #[test]
         fn test_isize() {
-            assert_serial_eq!(isize, &0);
-            assert_serial_eq!(isize, &isize::MIN);
-            assert_serial_eq!(isize, &isize::MAX);
+            type T = isize;
 
-            assert_serial_eq!(isize, &1);
-            assert_serial_eq!(isize, &-1);
-            assert_serial_eq!(isize, &(0x123456789ABCDEF88FEDCBA987654321i128 as isize));
-            assert_serial_eq!(isize, &(-0x123456789ABCDEF88FEDCBA987654321i128 as isize));
-            assert_serial_eq!(isize, &(0x43218FEDCBA9876556789ABCDEF81234i128 as isize));
-            assert_serial_eq!(isize, &(-0x43218FEDCBA9876556789ABCDEF81234i128 as isize));
+            assert_serial_eq!(T, &0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &1);
+            assert_serial_eq!(T, &-1);
+            assert_serial_eq!(T, &(0x123456789ABCDEF88FEDCBA987654321i128 as T));
+            assert_serial_eq!(T, &(-0x123456789ABCDEF88FEDCBA987654321i128 as T));
+            assert_serial_eq!(T, &(0x43218FEDCBA9876556789ABCDEF81234i128 as T));
+            assert_serial_eq!(T, &(-0x43218FEDCBA9876556789ABCDEF81234i128 as T));
+        }
+
+        #[test]
+        fn test_f32() {
+            type T = f32;
+            assert_serial_eq!(T, &0.0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+            assert_serial_eq!(T, &T::INFINITY);
+            assert_serial_eq!(T, &T::NEG_INFINITY);
+            assert_serial_eq!(T, &T::MIN_POSITIVE);
+
+            assert_serial_eq!(T, &1.0);
+            assert_serial_eq!(T, &-1.0);
+            assert_serial_eq!(T, &543e21);
+            assert_serial_eq!(T, &-543e21);
+            assert_serial_eq!(T, &543e-21);
+            assert_serial_eq!(T, &-543e-21);
+
+            let mut buf = [0; <T as SerialSize>::SIZE];
+            <T as Serialize>::serialize(&T::NAN, &mut buf);
+            let de =
+                <T as Deserialize>::deserialize(&buf).expect("deserialization failed");
+            assert!(de.is_nan());
+        }
+
+        #[test]
+        fn test_f64() {
+            type T = f64;
+            assert_serial_eq!(T, &0.0);
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+            assert_serial_eq!(T, &T::INFINITY);
+            assert_serial_eq!(T, &T::NEG_INFINITY);
+            assert_serial_eq!(T, &T::MIN_POSITIVE);
+
+            assert_serial_eq!(T, &1.0);
+            assert_serial_eq!(T, &-1.0);
+            assert_serial_eq!(T, &543e21);
+            assert_serial_eq!(T, &-543e21);
+            assert_serial_eq!(T, &543e-21);
+            assert_serial_eq!(T, &-543e-21);
+
+            let mut buf = [0; <T as SerialSize>::SIZE];
+            <T as Serialize>::serialize(&T::NAN, &mut buf);
+            let de =
+                <T as Deserialize>::deserialize(&buf).expect("deserialization failed");
+            assert!(de.is_nan());
         }
     }
 
@@ -384,181 +456,183 @@ mod tests {
 
         #[test]
         fn test_u8() {
-            assert_serial_eq!(NonZeroU8, &NonZeroU8::MIN);
-            assert_serial_eq!(NonZeroU8, &NonZeroU8::MAX);
+            type T = NonZeroU8;
 
-            assert_serial_eq!(NonZeroU8, &NonZeroU8::new(1).unwrap());
-            assert_serial_eq!(NonZeroU8, &NonZeroU8::new(0x34).unwrap());
-            assert_serial_eq!(NonZeroU8, &NonZeroU8::new(0x43).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(0x34).unwrap());
+            assert_serial_eq!(T, &T::new(0x43).unwrap());
         }
 
         #[test]
         fn test_i8() {
-            assert_serial_eq!(NonZeroI8, &NonZeroI8::MIN);
-            assert_serial_eq!(NonZeroI8, &NonZeroI8::MIN);
+            type T = NonZeroI8;
 
-            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(1).unwrap());
-            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(-1).unwrap());
-            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(0x34).unwrap());
-            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(-0x34).unwrap());
-            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(0x43).unwrap());
-            assert_serial_eq!(NonZeroI8, &NonZeroI8::new(-0x43).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MIN);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(-1).unwrap());
+            assert_serial_eq!(T, &T::new(0x34).unwrap());
+            assert_serial_eq!(T, &T::new(-0x34).unwrap());
+            assert_serial_eq!(T, &T::new(0x43).unwrap());
+            assert_serial_eq!(T, &T::new(-0x43).unwrap());
         }
 
         #[test]
         fn test_u16() {
-            assert_serial_eq!(NonZeroU16, &NonZeroU16::MIN);
-            assert_serial_eq!(NonZeroU16, &NonZeroU16::MAX);
+            type T = NonZeroU16;
 
-            assert_serial_eq!(NonZeroU16, &NonZeroU16::new(1).unwrap());
-            assert_serial_eq!(NonZeroU16, &NonZeroU16::new(0x1234).unwrap());
-            assert_serial_eq!(NonZeroU16, &NonZeroU16::new(0x4321).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(0x1234).unwrap());
+            assert_serial_eq!(T, &T::new(0x4321).unwrap());
         }
 
         #[test]
         fn test_i16() {
-            assert_serial_eq!(NonZeroI16, &NonZeroI16::MIN);
-            assert_serial_eq!(NonZeroI16, &NonZeroI16::MAX);
+            type T = NonZeroI16;
 
-            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(1).unwrap());
-            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(-1).unwrap());
-            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(0x1234).unwrap());
-            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(-0x1234).unwrap());
-            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(0x4321).unwrap());
-            assert_serial_eq!(NonZeroI16, &NonZeroI16::new(-0x4321).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(-1).unwrap());
+            assert_serial_eq!(T, &T::new(0x1234).unwrap());
+            assert_serial_eq!(T, &T::new(-0x1234).unwrap());
+            assert_serial_eq!(T, &T::new(0x4321).unwrap());
+            assert_serial_eq!(T, &T::new(-0x4321).unwrap());
         }
 
         #[test]
         fn test_u32() {
-            assert_serial_eq!(NonZeroU32, &NonZeroU32::MIN);
-            assert_serial_eq!(NonZeroU32, &NonZeroU32::MAX);
+            type T = NonZeroU32;
 
-            assert_serial_eq!(NonZeroU32, &NonZeroU32::new(1).unwrap());
-            assert_serial_eq!(NonZeroU32, &NonZeroU32::new(0x12345678).unwrap());
-            assert_serial_eq!(NonZeroU32, &NonZeroU32::new(0x87654321).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(0x12345678).unwrap());
+            assert_serial_eq!(T, &T::new(0x87654321).unwrap());
         }
 
         #[test]
         fn test_i32() {
-            assert_serial_eq!(NonZeroI32, &NonZeroI32::MIN);
-            assert_serial_eq!(NonZeroI32, &NonZeroI32::MAX);
+            type T = NonZeroI32;
 
-            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(1).unwrap());
-            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(-1).unwrap());
-            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(0x12345678).unwrap());
-            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(-0x12345678).unwrap());
-            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(0x43218765).unwrap());
-            assert_serial_eq!(NonZeroI32, &NonZeroI32::new(-0x43218765).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(-1).unwrap());
+            assert_serial_eq!(T, &T::new(0x12345678).unwrap());
+            assert_serial_eq!(T, &T::new(-0x12345678).unwrap());
+            assert_serial_eq!(T, &T::new(0x43218765).unwrap());
+            assert_serial_eq!(T, &T::new(-0x43218765).unwrap());
         }
 
         #[test]
         fn test_u64() {
-            assert_serial_eq!(NonZeroU64, &NonZeroU64::MIN);
-            assert_serial_eq!(NonZeroU64, &NonZeroU64::MAX);
+            type T = NonZeroU64;
 
-            assert_serial_eq!(NonZeroU64, &NonZeroU64::new(1).unwrap());
-            assert_serial_eq!(NonZeroU64, &NonZeroU64::new(0x123456789ABCDEF8).unwrap());
-            assert_serial_eq!(NonZeroU64, &NonZeroU64::new(0x8FEDCBA987654321).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(0x123456789ABCDEF8).unwrap());
+            assert_serial_eq!(T, &T::new(0x8FEDCBA987654321).unwrap());
         }
 
         #[test]
         fn test_i64() {
-            assert_serial_eq!(NonZeroI64, &NonZeroI64::MIN);
-            assert_serial_eq!(NonZeroI64, &NonZeroI64::MAX);
+            type T = NonZeroI64;
 
-            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(1).unwrap());
-            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(-1).unwrap());
-            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(0x123456789ABCDEF8).unwrap());
-            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(-0x123456789ABCDEF8).unwrap());
-            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(0x43218FEDCBA98765).unwrap());
-            assert_serial_eq!(NonZeroI64, &NonZeroI64::new(-0x43218FEDCBA98765).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(-1).unwrap());
+            assert_serial_eq!(T, &T::new(0x123456789ABCDEF8).unwrap());
+            assert_serial_eq!(T, &T::new(-0x123456789ABCDEF8).unwrap());
+            assert_serial_eq!(T, &T::new(0x43218FEDCBA98765).unwrap());
+            assert_serial_eq!(T, &T::new(-0x43218FEDCBA98765).unwrap());
         }
 
         #[test]
         fn test_u128() {
-            assert_serial_eq!(NonZeroU128, &NonZeroU128::MIN);
-            assert_serial_eq!(NonZeroU128, &NonZeroU128::MAX);
+            type T = NonZeroU128;
 
-            assert_serial_eq!(NonZeroU128, &NonZeroU128::new(1).unwrap());
-            assert_serial_eq!(
-                NonZeroU128,
-                &NonZeroU128::new(0x123456789ABCDEF88FEDCBA987654321).unwrap()
-            );
-            assert_serial_eq!(
-                NonZeroU128,
-                &NonZeroU128::new(0x8FEDCBA987654321123456789ABCDEF8).unwrap()
-            );
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(0x123456789ABCDEF88FEDCBA987654321).unwrap());
+            assert_serial_eq!(T, &T::new(0x8FEDCBA987654321123456789ABCDEF8).unwrap());
         }
 
         #[test]
         fn test_i128() {
-            assert_serial_eq!(NonZeroI128, &NonZeroI128::MIN);
-            assert_serial_eq!(NonZeroI128, &NonZeroI128::MAX);
+            type T = NonZeroI128;
 
-            assert_serial_eq!(NonZeroI128, &NonZeroI128::new(1).unwrap());
-            assert_serial_eq!(NonZeroI128, &NonZeroI128::new(-1).unwrap());
-            assert_serial_eq!(
-                NonZeroI128,
-                &NonZeroI128::new(0x123456789ABCDEF88FEDCBA987654321).unwrap()
-            );
-            assert_serial_eq!(
-                NonZeroI128,
-                &NonZeroI128::new(-0x123456789ABCDEF88FEDCBA987654321).unwrap()
-            );
-            assert_serial_eq!(
-                NonZeroI128,
-                &NonZeroI128::new(0x43218FEDCBA9876556789ABCDEF81234).unwrap()
-            );
-            assert_serial_eq!(
-                NonZeroI128,
-                &NonZeroI128::new(-0x43218FEDCBA9876556789ABCDEF81234).unwrap()
-            );
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(-1).unwrap());
+            assert_serial_eq!(T, &T::new(0x123456789ABCDEF88FEDCBA987654321).unwrap());
+            assert_serial_eq!(T, &T::new(-0x123456789ABCDEF88FEDCBA987654321).unwrap());
+            assert_serial_eq!(T, &T::new(0x43218FEDCBA9876556789ABCDEF81234).unwrap());
+            assert_serial_eq!(T, &T::new(-0x43218FEDCBA9876556789ABCDEF81234).unwrap());
         }
 
         #[test]
         fn test_usize() {
-            assert_serial_eq!(NonZeroUsize, &NonZeroUsize::MIN);
-            assert_serial_eq!(NonZeroUsize, &NonZeroUsize::MAX);
+            type T = NonZeroUsize;
+            type Base = usize;
 
-            assert_serial_eq!(NonZeroUsize, &NonZeroUsize::new(1).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
             assert_serial_eq!(
-                NonZeroUsize,
-                &NonZeroUsize::new(0x123456789ABCDEF88FEDCBA987654321u128 as usize)
-                    .unwrap()
+                T,
+                &T::new(0x123456789ABCDEF88FEDCBA987654321u128 as Base).unwrap()
             );
             assert_serial_eq!(
-                NonZeroUsize,
-                &NonZeroUsize::new(0x8FEDCBA987654321123456789ABCDEF8u128 as usize)
-                    .unwrap()
+                T,
+                &T::new(0x8FEDCBA987654321123456789ABCDEF8u128 as Base).unwrap()
             );
         }
 
         #[test]
         fn test_isize() {
-            assert_serial_eq!(NonZeroIsize, &NonZeroIsize::MIN);
-            assert_serial_eq!(NonZeroIsize, &NonZeroIsize::MAX);
+            type T = NonZeroIsize;
+            type Base = isize;
 
-            assert_serial_eq!(NonZeroIsize, &NonZeroIsize::new(1).unwrap());
-            assert_serial_eq!(NonZeroIsize, &NonZeroIsize::new(-1).unwrap());
+            assert_serial_eq!(T, &T::MIN);
+            assert_serial_eq!(T, &T::MAX);
+
+            assert_serial_eq!(T, &T::new(1).unwrap());
+            assert_serial_eq!(T, &T::new(-1).unwrap());
             assert_serial_eq!(
-                NonZeroIsize,
-                &NonZeroIsize::new(0x123456789ABCDEF88FEDCBA987654321i128 as isize)
-                    .unwrap()
+                T,
+                &T::new(0x123456789ABCDEF88FEDCBA987654321i128 as Base).unwrap()
             );
             assert_serial_eq!(
-                NonZeroIsize,
-                &NonZeroIsize::new(-0x123456789ABCDEF88FEDCBA987654321i128 as isize)
-                    .unwrap()
+                T,
+                &T::new(-0x123456789ABCDEF88FEDCBA987654321i128 as Base).unwrap()
             );
             assert_serial_eq!(
-                NonZeroIsize,
-                &NonZeroIsize::new(0x43218FEDCBA9876556789ABCDEF81234i128 as isize)
-                    .unwrap()
+                T,
+                &T::new(0x43218FEDCBA9876556789ABCDEF81234i128 as Base).unwrap()
             );
             assert_serial_eq!(
-                NonZeroIsize,
-                &NonZeroIsize::new(-0x43218FEDCBA9876556789ABCDEF81234i128 as isize)
-                    .unwrap()
+                T,
+                &T::new(-0x43218FEDCBA9876556789ABCDEF81234i128 as Base).unwrap()
             );
         }
     }
@@ -578,180 +652,189 @@ mod tests {
         #[test]
         #[cfg(target_has_atomic_load_store = "8")]
         fn test_u8() {
-            let load = |atomic: &AtomicU8| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicU8, &AtomicU8::new(u8::MIN), load);
-            assert_serial_eq!(AtomicU8, &AtomicU8::new(u8::MAX), load);
+            type T = AtomicU8;
+            type Base = u8;
 
-            assert_serial_eq!(AtomicU8, &AtomicU8::new(1), load);
-            assert_serial_eq!(AtomicU8, &AtomicU8::new(0x34), load);
-            assert_serial_eq!(AtomicU8, &AtomicU8::new(0x43), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(0x34), load);
+            assert_serial_eq!(T, &T::new(0x43), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "8")]
         fn test_i8() {
-            let load = |atomic: &AtomicI8| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicI8, &AtomicI8::new(i8::MIN), load);
-            assert_serial_eq!(AtomicI8, &AtomicI8::new(i8::MIN), load);
+            type T = AtomicI8;
+            type Base = i8;
 
-            assert_serial_eq!(AtomicI8, &AtomicI8::new(1), load);
-            assert_serial_eq!(AtomicI8, &AtomicI8::new(-1), load);
-            assert_serial_eq!(AtomicI8, &AtomicI8::new(0x34), load);
-            assert_serial_eq!(AtomicI8, &AtomicI8::new(-0x34), load);
-            assert_serial_eq!(AtomicI8, &AtomicI8::new(0x43), load);
-            assert_serial_eq!(AtomicI8, &AtomicI8::new(-0x43), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(-1), load);
+            assert_serial_eq!(T, &T::new(0x34), load);
+            assert_serial_eq!(T, &T::new(-0x34), load);
+            assert_serial_eq!(T, &T::new(0x43), load);
+            assert_serial_eq!(T, &T::new(-0x43), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "16")]
         fn test_u16() {
-            let load = |atomic: &AtomicU16| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicU16, &AtomicU16::new(u16::MIN), load);
-            assert_serial_eq!(AtomicU16, &AtomicU16::new(u16::MAX), load);
+            type T = AtomicU16;
+            type Base = u16;
 
-            assert_serial_eq!(AtomicU16, &AtomicU16::new(1), load);
-            assert_serial_eq!(AtomicU16, &AtomicU16::new(0x1234), load);
-            assert_serial_eq!(AtomicU16, &AtomicU16::new(0x4321), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(0x1234), load);
+            assert_serial_eq!(T, &T::new(0x4321), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "16")]
         fn test_i16() {
-            let load = |atomic: &AtomicI16| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicI16, &AtomicI16::new(i16::MIN), load);
-            assert_serial_eq!(AtomicI16, &AtomicI16::new(i16::MAX), load);
+            type T = AtomicI16;
+            type Base = i16;
 
-            assert_serial_eq!(AtomicI16, &AtomicI16::new(1), load);
-            assert_serial_eq!(AtomicI16, &AtomicI16::new(-1), load);
-            assert_serial_eq!(AtomicI16, &AtomicI16::new(0x1234), load);
-            assert_serial_eq!(AtomicI16, &AtomicI16::new(-0x1234), load);
-            assert_serial_eq!(AtomicI16, &AtomicI16::new(0x4321), load);
-            assert_serial_eq!(AtomicI16, &AtomicI16::new(-0x4321), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(-1), load);
+            assert_serial_eq!(T, &T::new(0x1234), load);
+            assert_serial_eq!(T, &T::new(-0x1234), load);
+            assert_serial_eq!(T, &T::new(0x4321), load);
+            assert_serial_eq!(T, &T::new(-0x4321), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "32")]
         fn test_u32() {
-            let load = |atomic: &AtomicU32| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicU32, &AtomicU32::new(u32::MIN), load);
-            assert_serial_eq!(AtomicU32, &AtomicU32::new(u32::MAX), load);
+            type T = AtomicU32;
+            type Base = u32;
 
-            assert_serial_eq!(AtomicU32, &AtomicU32::new(1), load);
-            assert_serial_eq!(AtomicU32, &AtomicU32::new(0x12345678), load);
-            assert_serial_eq!(AtomicU32, &AtomicU32::new(0x87654321), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(0x12345678), load);
+            assert_serial_eq!(T, &T::new(0x87654321), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "32")]
         fn test_i32() {
-            let load = |atomic: &AtomicI32| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicI32, &AtomicI32::new(i32::MIN), load);
-            assert_serial_eq!(AtomicI32, &AtomicI32::new(i32::MAX), load);
+            type T = AtomicI32;
+            type Base = i32;
 
-            assert_serial_eq!(AtomicI32, &AtomicI32::new(1), load);
-            assert_serial_eq!(AtomicI32, &AtomicI32::new(-1), load);
-            assert_serial_eq!(AtomicI32, &AtomicI32::new(0x12345678), load);
-            assert_serial_eq!(AtomicI32, &AtomicI32::new(-0x12345678), load);
-            assert_serial_eq!(AtomicI32, &AtomicI32::new(0x43218765), load);
-            assert_serial_eq!(AtomicI32, &AtomicI32::new(-0x43218765), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(-1), load);
+            assert_serial_eq!(T, &T::new(0x12345678), load);
+            assert_serial_eq!(T, &T::new(-0x12345678), load);
+            assert_serial_eq!(T, &T::new(0x43218765), load);
+            assert_serial_eq!(T, &T::new(-0x43218765), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "64")]
         fn test_u64() {
-            let load = |atomic: &AtomicU64| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicU64, &AtomicU64::new(u64::MIN), load);
-            assert_serial_eq!(AtomicU64, &AtomicU64::new(u64::MAX), load);
+            type T = AtomicU64;
+            type Base = u64;
 
-            assert_serial_eq!(AtomicU64, &AtomicU64::new(1), load);
-            assert_serial_eq!(AtomicU64, &AtomicU64::new(0x123456789ABCDEF8), load);
-            assert_serial_eq!(AtomicU64, &AtomicU64::new(0x8FEDCBA987654321), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(0x123456789ABCDEF8), load);
+            assert_serial_eq!(T, &T::new(0x8FEDCBA987654321), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "64")]
         fn test_i64() {
-            let load = |atomic: &AtomicI64| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicI64, &AtomicI64::new(i64::MIN), load);
-            assert_serial_eq!(AtomicI64, &AtomicI64::new(i64::MAX), load);
+            type T = AtomicI64;
+            type Base = i64;
 
-            assert_serial_eq!(AtomicI64, &AtomicI64::new(1), load);
-            assert_serial_eq!(AtomicI64, &AtomicI64::new(-1), load);
-            assert_serial_eq!(AtomicI64, &AtomicI64::new(0x123456789ABCDEF8), load);
-            assert_serial_eq!(AtomicI64, &AtomicI64::new(-0x123456789ABCDEF8), load);
-            assert_serial_eq!(AtomicI64, &AtomicI64::new(0x43218FEDCBA98765), load);
-            assert_serial_eq!(AtomicI64, &AtomicI64::new(-0x43218FEDCBA98765), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(-1), load);
+            assert_serial_eq!(T, &T::new(0x123456789ABCDEF8), load);
+            assert_serial_eq!(T, &T::new(-0x123456789ABCDEF8), load);
+            assert_serial_eq!(T, &T::new(0x43218FEDCBA98765), load);
+            assert_serial_eq!(T, &T::new(-0x43218FEDCBA98765), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "128")]
         #[cfg(feature = "atomic_int_128")]
         fn test_u128() {
-            let load = |atomic: &AtomicU128| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicU128, &AtomicU128::new(u128::MIN), load);
-            assert_serial_eq!(AtomicU128, &AtomicU128::new(u128::MAX), load);
+            type T = AtomicU128;
+            type Base = u128;
 
-            assert_serial_eq!(AtomicU128, &AtomicU128::new(1), load);
-            assert_serial_eq!(
-                AtomicU128,
-                &AtomicU128::new(0x123456789ABCDEF88FEDCBA987654321),
-                load
-            );
-            assert_serial_eq!(
-                AtomicU128,
-                &AtomicU128::new(0x8FEDCBA987654321123456789ABCDEF8),
-                load
-            );
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(0x123456789ABCDEF88FEDCBA987654321), load);
+            assert_serial_eq!(T, &T::new(0x8FEDCBA987654321123456789ABCDEF8), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "128")]
         #[cfg(feature = "atomic_int_128")]
         fn test_i128() {
-            let load = |atomic: &AtomicI128| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicI128, &AtomicI128::new(i128::MIN), load);
-            assert_serial_eq!(AtomicI128, &AtomicI128::new(i128::MAX), load);
+            type T = AtomicI128;
+            type Base = i128;
 
-            assert_serial_eq!(AtomicI128, &AtomicI128::new(1), load);
-            assert_serial_eq!(AtomicI128, &AtomicI128::new(-1), load);
-            assert_serial_eq!(
-                AtomicI128,
-                &AtomicI128::new(0x123456789ABCDEF88FEDCBA987654321),
-                load
-            );
-            assert_serial_eq!(
-                AtomicI128,
-                &AtomicI128::new(-0x123456789ABCDEF88FEDCBA987654321),
-                load
-            );
-            assert_serial_eq!(
-                AtomicI128,
-                &AtomicI128::new(0x43218FEDCBA9876556789ABCDEF81234),
-                load
-            );
-            assert_serial_eq!(
-                AtomicI128,
-                &AtomicI128::new(-0x43218FEDCBA9876556789ABCDEF81234),
-                load
-            );
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(-1), load);
+            assert_serial_eq!(T, &T::new(0x123456789ABCDEF88FEDCBA987654321), load);
+            assert_serial_eq!(T, &T::new(-0x123456789ABCDEF88FEDCBA987654321), load);
+            assert_serial_eq!(T, &T::new(0x43218FEDCBA9876556789ABCDEF81234), load);
+            assert_serial_eq!(T, &T::new(-0x43218FEDCBA9876556789ABCDEF81234), load);
         }
 
         #[test]
         #[cfg(target_has_atomic_load_store = "ptr")]
         fn test_usize() {
-            let load = |atomic: &AtomicUsize| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicUsize, &AtomicUsize::new(usize::MIN), load);
-            assert_serial_eq!(AtomicUsize, &AtomicUsize::new(usize::MAX), load);
+            type T = AtomicUsize;
+            type Base = usize;
 
-            assert_serial_eq!(AtomicUsize, &AtomicUsize::new(1), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
             assert_serial_eq!(
-                AtomicUsize,
-                &AtomicUsize::new(0x123456789ABCDEF88FEDCBA987654321u128 as usize),
+                T,
+                &T::new(0x123456789ABCDEF88FEDCBA987654321u128 as Base),
                 load
             );
             assert_serial_eq!(
-                AtomicUsize,
-                &AtomicUsize::new(0x8FEDCBA987654321123456789ABCDEF8u128 as usize),
+                T,
+                &T::new(0x8FEDCBA987654321123456789ABCDEF8u128 as Base),
                 load
             );
         }
@@ -759,30 +842,33 @@ mod tests {
         #[test]
         #[cfg(target_has_atomic_load_store = "ptr")]
         fn test_isize() {
-            let load = |atomic: &AtomicIsize| atomic.load(Ordering::SeqCst);
-            assert_serial_eq!(AtomicIsize, &AtomicIsize::new(isize::MIN), load);
-            assert_serial_eq!(AtomicIsize, &AtomicIsize::new(isize::MAX), load);
+            type T = AtomicIsize;
+            type Base = isize;
 
-            assert_serial_eq!(AtomicIsize, &AtomicIsize::new(1), load);
-            assert_serial_eq!(AtomicIsize, &AtomicIsize::new(-1), load);
+            let load = |atomic: &T| atomic.load(Ordering::SeqCst);
+            assert_serial_eq!(T, &T::new(Base::MIN), load);
+            assert_serial_eq!(T, &T::new(Base::MAX), load);
+
+            assert_serial_eq!(T, &T::new(1), load);
+            assert_serial_eq!(T, &T::new(-1), load);
             assert_serial_eq!(
-                AtomicIsize,
-                &AtomicIsize::new(0x123456789ABCDEF88FEDCBA987654321i128 as isize),
+                T,
+                &T::new(0x123456789ABCDEF88FEDCBA987654321i128 as Base),
                 load
             );
             assert_serial_eq!(
-                AtomicIsize,
-                &AtomicIsize::new(-0x123456789ABCDEF88FEDCBA987654321i128 as isize),
+                T,
+                &T::new(-0x123456789ABCDEF88FEDCBA987654321i128 as Base),
                 load
             );
             assert_serial_eq!(
-                AtomicIsize,
-                &AtomicIsize::new(0x43218FEDCBA9876556789ABCDEF81234i128 as isize),
+                T,
+                &T::new(0x43218FEDCBA9876556789ABCDEF81234i128 as Base),
                 load
             );
             assert_serial_eq!(
-                AtomicIsize,
-                &AtomicIsize::new(-0x43218FEDCBA9876556789ABCDEF81234i128 as isize),
+                T,
+                &T::new(-0x43218FEDCBA9876556789ABCDEF81234i128 as Base),
                 load
             );
         }
